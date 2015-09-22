@@ -1,0 +1,26 @@
+{
+  "name": "jsx-templating",
+  "version": "0.0.1",
+  "description": "Embedable templating library with minimal feature set. Uses JSX syntax for template definition.",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "mkdir -p build && browserify -s jsx-templating -e lib/index.js -t babelify | bfc > build/jsx-templating.js && browserify -s demo -e demo/demo.js -t babelify > demo/demo-built.js"
+  },
+  "keywords": [
+    "template",
+    "jsx"
+  ],
+  "author": "Wesley Walser",
+  "license": "MIT",
+  "dependencies": {
+    "object-defaults": "^0.1.0",
+    "object-path": "^0.9.2",
+    "virtual-element": "^1.2.0"
+  },
+  "devDependencies": {
+    "babel": "^5.8.23",
+    "babelify": "^6.3.0",
+    "bfc": "^0.3.1",
+    "browserify": "^11.0.0"
+  }
+}
