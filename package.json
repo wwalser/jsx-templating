@@ -10,6 +10,10 @@
     "template",
     "jsx"
   ],
+  "repository" :{
+    "type" : "git",
+    "url" : "git@github.com:wwalser/jsx-templating.git"
+  },
   "author": "Wesley Walser",
   "license": "MIT",
   "dependencies": {
