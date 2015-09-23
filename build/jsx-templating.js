@@ -3,7 +3,7 @@
 
 var element = _require('virtual-element');
 var defaults = _require('object-defaults');
-//var keypath = require('object-path');
+var eventRegex = /^on[A-Z]/;
 
 function render(node) {
     var fragment = document.createDocumentFragment();
@@ -103,12 +103,15 @@ function renderElement(elementNode) {
     var element = document.createElement(tagName);
 
     Object.keys(attributes).forEach(function (attributeName) {
-        setAttribute(element, attributeName, attributes[attributeName]);
+        if (eventRegex.test(attributeName)) {
+            element.addEventListener(attributeName.substr(2).toLowerCase(), attributes[attributeName]);
+        } else {
+            setAttribute(element, attributeName, attributes[attributeName]);
+        }
     });
 
     childNodes.forEach(function (child) {
-        var childNode = toNative(child);
-        element.appendChild(childNode);
+        element.appendChild(toNative(child));
     });
 
     return element;

@@ -4,7 +4,11 @@ var templating = require('../build/jsx-templating');
 //implementation of the component.
 var MainContent = {
     render: function(props){
-	return <div id="content"><p>{props.children}</p></div>;
+	var clickHandler = (event) => {
+	    console.log(event.target.getAttribute('href'));
+	    event.preventDefault();
+	};
+	return <div id="content"><p><a onClick={clickHandler} href="http://www.google.com">Test link</a> {props.children}</p></div>;
     }
 };
 

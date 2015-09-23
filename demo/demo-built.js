@@ -34,7 +34,7 @@
 
             var element = _require('virtual-element');
             var defaults = _require('object-defaults');
-            //var keypath = require('object-path');
+            var eventRegex = /^on[A-Z]/;
 
             function render(node) {
                 var fragment = document.createDocumentFragment();
@@ -134,12 +134,15 @@
                 var element = document.createElement(tagName);
 
                 Object.keys(attributes).forEach(function (attributeName) {
-                    setAttribute(element, attributeName, attributes[attributeName]);
+                    if (eventRegex.test(attributeName)) {
+                        element.addEventListener(attributeName.substr(2).toLowerCase(), attributes[attributeName]);
+                    } else {
+                        setAttribute(element, attributeName, attributes[attributeName]);
+                    }
                 });
 
                 childNodes.forEach(function (child) {
-                    var childNode = toNative(child);
-                    element.appendChild(childNode);
+                    element.appendChild(toNative(child));
                 });
 
                 return element;
@@ -347,45 +350,55 @@
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],2:[function(require,module,exports){
 /** @jsx templating.element */
-"use strict";
+'use strict';
 
 var templating = require('../build/jsx-templating');
 
 //implementation of the component.
 var MainContent = {
-    render: function render(props) {
-        return templating.element(
-            "div",
-            { id: "content" },
-            templating.element(
-                "p",
-                null,
-                props.children
-            )
-        );
-    }
+				render: function render(props) {
+								var clickHandler = function clickHandler(event) {
+												console.log(event.target.getAttribute('href'));
+												event.preventDefault();
+								};
+								return templating.element(
+												'div',
+												{ id: 'content' },
+												templating.element(
+																'p',
+																null,
+																templating.element(
+																				'a',
+																				{ onClick: clickHandler, href: 'http://www.google.com' },
+																				'Test link'
+																),
+																' ',
+																props.children
+												)
+								);
+				}
 };
 
 function wrapper(header) {
-    return templating.element(
-        "div",
-        { id: "wrapper" },
-        templating.element(
-            "h2",
-            null,
-            header
-        ),
-        templating.element(
-            MainContent,
-            null,
-            "Testing main content component!"
-        )
-    );
+				return templating.element(
+								'div',
+								{ id: 'wrapper' },
+								templating.element(
+												'h2',
+												null,
+												header
+								),
+								templating.element(
+												MainContent,
+												null,
+												'Testing main content component!'
+								)
+				);
 }
 
 //init the demo.
 function init() {
-    document.body.appendChild(templating.render(wrapper("Testing Component")));
+				document.body.appendChild(templating.render(wrapper("Testing Component")));
 }
 
 init();
