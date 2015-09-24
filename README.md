@@ -1,6 +1,7 @@
 JSX Templating
 ==============
 [![Build Status](https://travis-ci.org/wwalser/jsx-templating.svg?branch=master)](https://travis-ci.org/wwalser/jsx-templating) [![NPM Version](http://img.shields.io/npm/v/jsx-templating.svg)](https://www.npmjs.com/package/jsx-templating)
+
 Minimal JSX templating. Small footprint, no re-rendering, no diffing. Just templating.
 
 Designed for an embedded script where single pass templating was needed and JSX syntax was desired. Limited use case, but serves well as a micro templating library.
