@@ -4,9 +4,9 @@
   "description": "Micro templating library using JSX syntax.",
   "main": "lib/index.js",
   "scripts": {
-      "build": "mkdir -p build && browserify -s jsx-templating -e lib/index.js -t babelify | bfc > build/jsx-templating.js && browserify -s demo -e demo/demo.js -t babelify > demo/demo-built.js",
-      "test": "karma start --single-run",
-      "test-watch": "karma start"
+    "build": "mkdir -p build && browserify -s jsx-templating -e lib/index.js -t babelify | bfc > build/jsx-templating.js && browserify -s demo -e demo/demo.js -t babelify > demo/demo-built.js",
+    "test": "karma start --single-run --browsers Firefox",
+    "test-watch": "karma start"
   },
   "keywords": [
     "template",
@@ -31,6 +31,7 @@
     "jasmine-core": "^2.3.4",
     "karma": "^0.13.10",
     "karma-chrome-launcher": "^0.2.0",
+    "karma-firefox-launcher": "^0.1.6",
     "karma-jasmine": "^0.3.6"
   }
 }
