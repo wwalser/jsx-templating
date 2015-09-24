@@ -392,7 +392,8 @@ function wrapper(header) {
 												MainContent,
 												null,
 												'Testing main content component!'
-								)
+								),
+								templating.element('span', { 'class': 'icon' })
 				);
 }
 

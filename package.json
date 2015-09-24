@@ -1,18 +1,20 @@
 {
   "name": "jsx-templating",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Micro templating library using JSX syntax.",
   "main": "lib/index.js",
   "scripts": {
-    "build": "mkdir -p build && browserify -s jsx-templating -e lib/index.js -t babelify | bfc > build/jsx-templating.js && browserify -s demo -e demo/demo.js -t babelify > demo/demo-built.js"
+      "build": "mkdir -p build && browserify -s jsx-templating -e lib/index.js -t babelify | bfc > build/jsx-templating.js && browserify -s demo -e demo/demo.js -t babelify > demo/demo-built.js",
+      "test": "karma start --single-run",
+      "test-watch": "karma start"
   },
   "keywords": [
     "template",
     "jsx"
   ],
-  "repository" :{
-    "type" : "git",
-    "url" : "git@github.com:wwalser/jsx-templating.git"
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:wwalser/jsx-templating.git"
   },
   "author": "Wesley Walser",
   "license": "MIT",
@@ -25,6 +27,10 @@
     "babel": "^5.8.23",
     "babelify": "^6.3.0",
     "bfc": "^0.3.1",
-    "browserify": "^11.0.0"
+    "browserify": "^11.0.0",
+    "jasmine-core": "^2.3.4",
+    "karma": "^0.13.10",
+    "karma-chrome-launcher": "^0.2.0",
+    "karma-jasmine": "^0.3.6"
   }
 }

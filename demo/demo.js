@@ -8,12 +8,20 @@ var MainContent = {
 	    console.log(event.target.getAttribute('href'));
 	    event.preventDefault();
 	};
-	return <div id="content"><p><a onClick={clickHandler} href="http://www.google.com">Test link</a> {props.children}</p></div>;
+	return <div id="content">
+	    <p>
+	    <a onClick={clickHandler} href="http://www.google.com">Test link</a> {props.children}
+	    </p>
+	</div>;
     }
 };
 
 function wrapper(header) {
-    return <div id="wrapper"><h2>{header}</h2><MainContent>Testing main content component!</MainContent></div>;
+    return <div id="wrapper">
+	<h2>{header}</h2>
+	<MainContent>Testing main content component!</MainContent>
+	<span class="icon"></span>
+    </div>;
 }
 
 //init the demo.
