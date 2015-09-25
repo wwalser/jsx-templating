@@ -1,151 +1,140 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.jsxTemplating = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof _require=="function"&&_require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof _require=="function"&&_require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_require,module,exports){
-'use strict';
+"use strict";
 
 var element = _require('virtual-element');
-var defaults = _require('object-defaults');
 var eventRegex = /^on[A-Z]/;
 
 function render(node) {
-    var fragment = document.createDocumentFragment();
-    fragment.appendChild(toNative(node));
-    return fragment;
+  var fragment = document.createDocumentFragment();
+  fragment.appendChild(toNative(node));
+  return fragment;
 }
 module.exports = {
-    render: render,
-    element: element
+  render: render,
+  element: element
 };
 
 /**
- * Renders a component tree.
- * Returns a document fragment containing the full tree.
- */
+* Renders a component tree.
+* Returns a document fragment containing the full tree.
+*/
 function toNative(node) {
-    switch (nodeType(node)) {
-        case "text":
-            return renderTextNode(node);
-        case "element":
-            return renderElement(node);
-        case "component":
-            return renderComponent(node);
-    }
+  switch (nodeType(node)) {
+    case "text":
+      return document.createTextNode(node);
+    case "element":
+      return renderElement(node);
+    case "component":
+      return renderComponent(node);
+  }
 }
 
 function nodeType(node) {
-    var type = valType(node);
-    if (type === 'null' || node === false) return 'empty';
-    if (type !== 'object') {
-        return 'text';
-    }
-    if (valType(node.type) === 'string') {
-        return 'element';
-    }
-    return 'component';
+  var type = valType(node);
+  if (type === 'null' || node === false) return 'empty';
+  if (type !== 'object') {
+    return 'text';
+  }
+  if (valType(node.type) === 'string') {
+    return 'element';
+  }
+  return 'component';
 }
 
 function valType(val) {
-    if (val === null) {
-        return 'null';
-    };
-    if (val === undefined) {
-        return 'undefined';
-    };
+  if (val === null) {
+    return 'null';
+  };
+  if (val === undefined) {
+    return 'undefined';
+  };
 
-    val = val.valueOf ? val.valueOf() : Object.prototype.valueOf.apply(val);
+  val = val.valueOf ? val.valueOf() : Object.prototype.valueOf.apply(val);
 
-    return typeof val;
+  return typeof val;
 }
 
 function setAttribute(element, name, value) {
-    switch (name) {
-        case 'checked':
-        case 'disabled':
-        case 'selected':
-            element[name] = true;
-            break;
-        case 'innerHTML':
-            element.innerHTML = value;
-            break;
-        case 'value':
-            element.value = value;
-            break;
-        default:
-            element.setAttribute(name, value);
-            break;
+  switch (name) {
+    case 'checked':
+    case 'disabled':
+    case 'selected':
+      element[name] = true;
+      break;
+    case 'innerHTML':
+      element.innerHTML = value;
+      break;
+    case 'value':
+      element.value = value;
+      break;
+    default:
+      element.setAttribute(name, value);
+      break;
+  }
+}
+
+function normalizeComponent(_ref) {
+  var type = _ref.type;
+  var children = _ref.children;
+  var attributes = _ref.attributes;
+  var initialState = _ref.initialState;
+  var defaultProps = _ref.defaultProps;
+  var name = _ref.name;
+
+  var component = type;
+  var props = {
+    children: children
+  };
+  Object.keys(attributes).forEach(function (attribute) {
+    props[attribute] = attributes[attribute];
+  });
+  Object.keys(defaultProps || {}).forEach(function (attribute) {
+    //Do not overwrite existing props with it's default value
+    if (!props[attribute]) {
+      props[attribute] = defaultProps[attribute];
     }
+  });
+  return {
+    component: component,
+    props: props,
+    render: typeof component === 'function' ? component : component.render,
+    state: initialState ? initialState(props) : {},
+    displayName: name || 'Component'
+  };
 }
 
-function normalizeComponent(componentNode) {
-    var component = componentNode.type;
-    var props = {
-        children: componentNode.children
-    };
-    Object.keys(componentNode.attributes).forEach(function (attribute) {
-        props[attribute] = componentNode.attributes[attribute];
-    });
-    return {
-        component: component,
-        render: typeof component === 'function' ? component : component.render,
-        props: defaults(props || {}, componentNode.defaultProps || {}),
-        state: componentNode.initialState ? componentNode.initialState(props) : {},
-        displayName: componentNode.name || 'Component'
-    };
-}
+function renderElement(_ref2) {
+  var type = _ref2.type;
+  var attributes = _ref2.attributes;
+  var children = _ref2.children;
 
-function renderTextNode(textNode) {
-    return document.createTextNode(textNode);
-}
+  var element = document.createElement(type);
 
-function renderElement(elementNode) {
-    var tagName = elementNode.type;
-    var attributes = elementNode.attributes;
-    var childNodes = elementNode.children;
+  Object.keys(attributes).forEach(function (attributeName) {
+    if (eventRegex.test(attributeName)) {
+      element.addEventListener(attributeName.substr(2).toLowerCase(), attributes[attributeName]);
+    } else {
+      setAttribute(element, attributeName, attributes[attributeName]);
+    }
+  });
 
-    var element = document.createElement(tagName);
+  children.forEach(function (child) {
+    element.appendChild(toNative(child));
+  });
 
-    Object.keys(attributes).forEach(function (attributeName) {
-        if (eventRegex.test(attributeName)) {
-            element.addEventListener(attributeName.substr(2).toLowerCase(), attributes[attributeName]);
-        } else {
-            setAttribute(element, attributeName, attributes[attributeName]);
-        }
-    });
-
-    childNodes.forEach(function (child) {
-        element.appendChild(toNative(child));
-    });
-
-    return element;
+  return element;
 }
 
 function renderComponent(componentNode) {
-    var component = normalizeComponent(componentNode);
-    var fn = component.render;
-    if (!fn) throw new Error('Component needs a render function');
-    var node = fn(component.props);
-    if (!node) throw new Error('Render function must return an element.');
-    return toNative(node);
+  var component = normalizeComponent(componentNode);
+  var fn = component.render;
+  if (!fn) throw new Error('Component needs a render function');
+  var node = fn(component.props);
+  if (!node) throw new Error('Render function must return an element.');
+  return toNative(node);
 }
 
-},{"object-defaults":2,"virtual-element":3}],2:[function(_require,module,exports){
-'use strict'
-
-module.exports = function(target) {
-  target = target || {}
-
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i]
-    if (!source) continue
-
-    Object.getOwnPropertyNames(source).forEach(function(key) {
-      if (undefined === target[key])
-        target[key] = source[key]
-    })
-  }
-
-  return target
-}
-
-},{}],3:[function(_require,module,exports){
+},{"virtual-element":2}],2:[function(_require,module,exports){
 /**
  * Module dependencies.
  */
@@ -219,7 +208,7 @@ function element (type, attributes, children) {
   }
 }
 
-},{"array-flatten":4,"sliced":5}],4:[function(_require,module,exports){
+},{"array-flatten":3,"sliced":4}],3:[function(_require,module,exports){
 'use strict'
 
 /**
@@ -285,10 +274,10 @@ function arrayFlatten (array, depth) {
   return flattenWithDepth(array, [], depth)
 }
 
-},{}],5:[function(_require,module,exports){
+},{}],4:[function(_require,module,exports){
 module.exports = exports = _require('./lib/sliced');
 
-},{"./lib/sliced":6}],6:[function(_require,module,exports){
+},{"./lib/sliced":5}],5:[function(_require,module,exports){
 
 /**
  * An Array.prototype.slice.call(arguments) alternative

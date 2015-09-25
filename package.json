@@ -1,6 +1,6 @@
 {
   "name": "jsx-templating",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Micro templating library using JSX syntax.",
   "main": "lib/index.js",
   "scripts": {
@@ -19,7 +19,6 @@
   "author": "Wesley Walser",
   "license": "MIT",
   "dependencies": {
-    "object-defaults": "^0.1.0",
     "object-path": "^0.9.2",
     "virtual-element": "^1.2.0"
   },
