@@ -36,9 +36,7 @@
       var eventRegex = /^on[A-Z]/;
 
       function render(node) {
-        var fragment = document.createDocumentFragment();
-        fragment.appendChild(toNative(node));
-        return fragment;
+        return toNative(node);
       }
       module.exports = {
         render: render,
@@ -104,19 +102,15 @@
         }
       }
 
-      function normalizeComponent(_ref) {
-        var type = _ref.type;
-        var children = _ref.children;
-        var attributes = _ref.attributes;
-        var initialState = _ref.initialState;
+      function normalizeComponent(_ref, attributes, children) {
+        var render = _ref.render;
         var defaultProps = _ref.defaultProps;
         var name = _ref.name;
 
-        var component = type;
         var props = {
           children: children
         };
-        Object.keys(attributes).forEach(function (attribute) {
+        Object.keys(attributes || {}).forEach(function (attribute) {
           props[attribute] = attributes[attribute];
         });
         Object.keys(defaultProps || {}).forEach(function (attribute) {
@@ -126,10 +120,8 @@
           }
         });
         return {
-          component: component,
           props: props,
-          render: typeof component === 'function' ? component : component.render,
-          state: initialState ? initialState(props) : {},
+          render: render,
           displayName: name || 'Component'
         };
       }
@@ -156,8 +148,12 @@
         return element;
       }
 
-      function renderComponent(componentNode) {
-        var component = normalizeComponent(componentNode);
+      function renderComponent(_ref3) {
+        var type = _ref3.type;
+        var attributes = _ref3.attributes;
+        var children = _ref3.children;
+
+        var component = normalizeComponent(type, attributes, children);
         var fn = component.render;
         if (!fn) throw new Error('Component needs a render function');
         var node = fn(component.props);
