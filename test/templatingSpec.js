@@ -58,6 +58,7 @@ describe("jsxTemplating", function() {
     var withAttrs = jsxTemplating.element('span', {supportsAttrs: true, class: 'foo bar'});
     var eventFired = false;
     var withEvent = jsxTemplating.element('span', {onClick: function(e){eventFired = true;}});
+    var innerHtml = jsxTemplating.element('p', {innerHTML: '<a href="http://www.google.com">Google</a>'});
     
     describe("standard elements", function(){
       it('Basic render', render(basicElement).test(function(element){
@@ -83,6 +84,10 @@ describe("jsxTemplating", function() {
         element.dispatchEvent(event);
         expect(eventFired).toBe(true);
       }));
+
+      it('innerHTML can be used to ignore escaping', render(innerHtml).test(function(element){
+        expect(element.querySelectorAll('a')[0].getAttribute('href')).toBe('http://www.google.com');
+      }));
     });
 
     describe("components", function(){
@@ -101,8 +106,16 @@ describe("jsxTemplating", function() {
           return jsxTemplating.element('span', props);
         }
       };
+      var UsesChildren = {
+        render: function(props){
+          return jsxTemplating.element('div', {class: 'container'}, props.children);
+        }
+      };
       var defaultProps = jsxTemplating.element(WithDefaultProps, null);
       var propsOverwritten = jsxTemplating.element(WithDefaultProps, {class: 'foo'});
+      var withChildren = jsxTemplating.element(UsesChildren, null,
+        jsxTemplating.element('p', null, "Top level!"),
+        jsxTemplating.element('span', null, jsxTemplating.element('p', null, 'Deeper!')));
 
       it('Basic component', render(JustRender).test(function(element){
         expect(element.getAttribute('supportsAttrs')).toBe('true');
@@ -118,6 +131,11 @@ describe("jsxTemplating", function() {
       it("Default props are overwritten by provided props", render(propsOverwritten).test(function(element){
         expect(element.classList).not.toContain('baz');
         expect(element.classList).toContain('foo');
+      }));
+
+      it("Child elements can be accessed and rendered correctly.", render(withChildren).test(function(element){
+        expect(element.querySelectorAll('p')[0].textContent).toBe('Top level!');
+        expect(element.querySelectorAll('span p')[0].textContent).toBe('Deeper!');
       }));
     });
   });

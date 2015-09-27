@@ -9,9 +9,8 @@ var MainContent = {
 	    event.preventDefault();
 	};
 	return <div id="content">
-	    <p>
-	    <a onClick={clickHandler} href="http://www.google.com">Test link</a> {props.children}
-	    </p>
+            <a onClick={clickHandler} href="http://www.google.com">Test link</a>
+            {props.children}
 	</div>;
     }
 };
@@ -19,7 +18,7 @@ var MainContent = {
 function wrapper(header) {
     return <div id="wrapper">
 	<h2>{header}</h2>
-	<MainContent>Testing main content component!</MainContent>
+	<MainContent><span><p>Testing main content component!</p></span></MainContent>
 	<span class="icon"></span>
     </div>;
 }

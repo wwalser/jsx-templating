@@ -4,19 +4,11 @@
 var element = _require('virtual-element');
 var eventRegex = /^on[A-Z]/;
 
-function render(node) {
-  return toNative(node);
-}
-module.exports = {
-  render: render,
-  element: element
-};
-
 /**
 * Renders a component tree.
 * Returns a document fragment containing the full tree.
 */
-function toNative(node) {
+function render(node) {
   switch (nodeType(node)) {
     case "text":
       return document.createTextNode(node);
@@ -26,10 +18,13 @@ function toNative(node) {
       return renderComponent(node);
   }
 }
+module.exports = {
+  render: render,
+  element: element
+};
 
 function nodeType(node) {
   var type = valType(node);
-  if (type === 'null' || node === false) return 'empty';
   if (type !== 'object') {
     return 'text';
   }
@@ -40,13 +35,6 @@ function nodeType(node) {
 }
 
 function valType(val) {
-  if (val === null) {
-    return 'null';
-  };
-  if (val === undefined) {
-    return 'undefined';
-  };
-
   val = val.valueOf ? val.valueOf() : Object.prototype.valueOf.apply(val);
 
   return typeof val;
@@ -111,7 +99,7 @@ function renderElement(_ref2) {
   });
 
   children.forEach(function (child) {
-    element.appendChild(toNative(child));
+    element.appendChild(render(child));
   });
 
   return element;
@@ -127,7 +115,7 @@ function renderComponent(_ref3) {
   if (!fn) throw new Error('Component needs a render function');
   var node = fn(component.props);
   if (!node) throw new Error('Render function must return an element.');
-  return toNative(node);
+  return render(node);
 }
 
 },{"virtual-element":2}],2:[function(_require,module,exports){

@@ -35,19 +35,11 @@
       var element = _require('virtual-element');
       var eventRegex = /^on[A-Z]/;
 
-      function render(node) {
-        return toNative(node);
-      }
-      module.exports = {
-        render: render,
-        element: element
-      };
-
       /**
       * Renders a component tree.
       * Returns a document fragment containing the full tree.
       */
-      function toNative(node) {
+      function render(node) {
         switch (nodeType(node)) {
           case "text":
             return document.createTextNode(node);
@@ -57,10 +49,13 @@
             return renderComponent(node);
         }
       }
+      module.exports = {
+        render: render,
+        element: element
+      };
 
       function nodeType(node) {
         var type = valType(node);
-        if (type === 'null' || node === false) return 'empty';
         if (type !== 'object') {
           return 'text';
         }
@@ -71,13 +66,6 @@
       }
 
       function valType(val) {
-        if (val === null) {
-          return 'null';
-        };
-        if (val === undefined) {
-          return 'undefined';
-        };
-
         val = val.valueOf ? val.valueOf() : Object.prototype.valueOf.apply(val);
 
         return typeof val;
@@ -142,7 +130,7 @@
         });
 
         children.forEach(function (child) {
-          element.appendChild(toNative(child));
+          element.appendChild(render(child));
         });
 
         return element;
@@ -158,7 +146,7 @@
         if (!fn) throw new Error('Component needs a render function');
         var node = fn(component.props);
         if (!node) throw new Error('Render function must return an element.');
-        return toNative(node);
+        return render(node);
       }
     }, { "virtual-element": 2 }], 2: [function (_require, module, exports) {
       /**
@@ -352,16 +340,11 @@ var MainContent = {
 												'div',
 												{ id: 'content' },
 												templating.element(
-																'p',
-																null,
-																templating.element(
-																				'a',
-																				{ onClick: clickHandler, href: 'http://www.google.com' },
-																				'Test link'
-																),
-																' ',
-																props.children
-												)
+																'a',
+																{ onClick: clickHandler, href: 'http://www.google.com' },
+																'Test link'
+												),
+												props.children
 								);
 				}
 };
@@ -378,7 +361,15 @@ function wrapper(header) {
 								templating.element(
 												MainContent,
 												null,
-												'Testing main content component!'
+												templating.element(
+																'span',
+																null,
+																templating.element(
+																				'p',
+																				null,
+																				'Testing main content component!'
+																)
+												)
 								),
 								templating.element('span', { 'class': 'icon' })
 				);
