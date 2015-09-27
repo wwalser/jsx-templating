@@ -37,7 +37,6 @@
 
       /**
       * Renders a component tree.
-      * Returns a document fragment containing the full tree.
       */
       function render(node) {
         switch (nodeType(node)) {
