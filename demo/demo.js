@@ -1,5 +1,5 @@
 /** @jsx templating.element */
-var templating = require('../build/jsx-templating');
+var templating = require('../index');
 
 //implementation of the component.
 var MainContent = {
