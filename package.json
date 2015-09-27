@@ -1,6 +1,6 @@
 {
   "name": "jsx-templating",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Micro templating library using JSX syntax.",
   "main": "lib/index.js",
   "scripts": {
