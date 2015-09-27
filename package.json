@@ -4,7 +4,7 @@
   "description": "Micro templating library using JSX syntax.",
   "main": "index.js",
   "scripts": {
-    "build": "mkdir -p build && browserify -s jsx-templating -e index.js -t babelify | bfc > build/jsx-templating.js && browserify -s demo -e demo/demo.js -t babelify > demo/demo-built.js",
+    "build": "mkdir -p build && browserify -s jsx-templating -t babelify index.js > build/jsx-templating.js && browserify -s demo -e demo/demo.js -t babelify > demo/demo-built.js",
     "test": "karma start --single-run --browsers Firefox",
     "test-watch": "karma start"
   },
