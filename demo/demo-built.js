@@ -331,53 +331,53 @@ var templating = require('../build/jsx-templating');
 
 //implementation of the component.
 var MainContent = {
-				render: function render(props) {
-								var clickHandler = function clickHandler(event) {
-												console.log(event.target.getAttribute('href'));
-												event.preventDefault();
-								};
-								return templating.element(
-												'div',
-												{ id: 'content' },
-												templating.element(
-																'a',
-																{ onClick: clickHandler, href: 'http://www.google.com' },
-																'Test link'
-												),
-												props.children
-								);
-				}
+  render: function render(props) {
+    var clickHandler = function clickHandler(event) {
+      console.log(event.target.getAttribute('href'));
+      event.preventDefault();
+    };
+    return templating.element(
+      'div',
+      { id: 'content' },
+      templating.element(
+        'a',
+        { onClick: clickHandler, href: 'http://www.google.com' },
+        'Test link'
+      ),
+      props.children
+    );
+  }
 };
 
 function wrapper(header) {
-				return templating.element(
-								'div',
-								{ id: 'wrapper' },
-								templating.element(
-												'h2',
-												null,
-												header
-								),
-								templating.element(
-												MainContent,
-												null,
-												templating.element(
-																'span',
-																null,
-																templating.element(
-																				'p',
-																				null,
-																				'Testing main content component!'
-																)
-												)
-								),
-								templating.element('span', { 'class': 'icon' })
-				);
+  return templating.element(
+    'div',
+    { id: 'wrapper' },
+    templating.element(
+      'h2',
+      null,
+      header
+    ),
+    templating.element(
+      MainContent,
+      null,
+      templating.element(
+        'span',
+        null,
+        templating.element(
+          'p',
+          null,
+          'Testing main content component!'
+        )
+      )
+    ),
+    templating.element('span', { 'class': 'icon' })
+  );
 }
 
 //init the demo.
 function init() {
-				document.body.appendChild(templating.render(wrapper("Testing Component")));
+  document.body.appendChild(templating.render(wrapper("Testing Component")));
 }
 
 init();
